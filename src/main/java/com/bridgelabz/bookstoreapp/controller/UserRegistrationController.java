@@ -1,9 +1,6 @@
 package com.bridgelabz.bookstoreapp.controller;
 
-import com.bridgelabz.bookstoreapp.dto.ForgotPasswordDto;
-import com.bridgelabz.bookstoreapp.dto.LoginDto;
-import com.bridgelabz.bookstoreapp.dto.ResponseDTO;
-import com.bridgelabz.bookstoreapp.dto.UserRegistrationDto;
+import com.bridgelabz.bookstoreapp.dto.*;
 import com.bridgelabz.bookstoreapp.exception.UserRegistrationException;
 import com.bridgelabz.bookstoreapp.model.UserRegistrationData;
 import com.bridgelabz.bookstoreapp.service.IUserRegistrationService;
@@ -41,7 +38,7 @@ public class UserRegistrationController {
     public ResponseEntity<ResponseDTO> addUserRegistrationData(@Valid @RequestBody UserRegistrationDto userDTO) {
         UserRegistrationData userDetails = service.createUserRegistration(userDTO);
         log.debug("User Registration input detaisl: " + userDTO.toString());
-        ResponseDTO response = new ResponseDTO("successfully Created/Registered the user  for", tokenUtil.createToken(userDetails.getUserId()));
+        ResponseDTO response = new ResponseDTO("successfully Created/Registered the user for Verficaton mail sent",tokenUtil.createToken(userDetails.getUserId()) );
         return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
     }
 
@@ -76,7 +73,19 @@ public class UserRegistrationController {
 
     }
 
-//
+    @PostMapping("/userlogin")
+    public ResponseEntity<ResponseDTO> userLogin(@RequestBody LoginDto logindto) {
+        Optional<UserRegistrationData> login = service.UserLogin(logindto);
+        if (login != null) {
+            ResponseDTO dto = new ResponseDTO("User login successfully:", tokenUtil.createToken(login.get().getUserId()));
+            return new ResponseEntity<>(dto, HttpStatus.ACCEPTED);
+        } else {
+            ResponseDTO dto = new ResponseDTO("User login not successfully:", login);
+            return new ResponseEntity<>(dto, HttpStatus.ACCEPTED);
+
+        }
+    }
+
 
     @PostMapping("/verify/{token}")
     ResponseEntity<ResponseDTO> verifyUser(@Valid @PathVariable String token) {
@@ -90,31 +99,21 @@ public class UserRegistrationController {
         }
     }
 
-    @PutMapping("/forgotpassword")
-    public ResponseEntity<ResponseDTO> forgotUserPassword(@RequestBody ForgotPasswordDto passwordDTO) {
-        Optional<UserRegistrationData> forgotPassword = service.forgotPassword(passwordDTO);
-        if (forgotPassword.toString() != null) {
-            ResponseDTO dto = new ResponseDTO("password updated successfully:", forgotPassword);
-            return new ResponseEntity<>(dto, HttpStatus.ACCEPTED);
-        } else {
-            ResponseDTO dto = new ResponseDTO("password  not Updated:", forgotPassword);
-            return new ResponseEntity<>(dto, HttpStatus.ACCEPTED);
-        }
-
+    @PostMapping("/forgotpassword")
+    ResponseEntity<ResponseDTO> forgotpass(@Valid @RequestBody ForgotPasswordDto forgotpassword) {
+        String forgotPassword = service.forgotPassword(forgotpassword);
+        ResponseDTO response = new ResponseDTO("Reset Password link sent to Email  :", forgotPassword);
+          return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 
-    @PostMapping("/userlogin")
-    public ResponseEntity<ResponseDTO> userLogin(@RequestBody LoginDto logindto) {
-        Optional<UserRegistrationData> login = service.UserLogin(logindto);
-        if(login != null) {
-            ResponseDTO dto = new ResponseDTO("User login successfully:",tokenUtil.createToken(login.get().getUserId()));
-            return new ResponseEntity<>(dto, HttpStatus.ACCEPTED);
-        }
-        else {
-            ResponseDTO dto = new ResponseDTO("User login not successfully:", login);
-            return new ResponseEntity<>(dto, HttpStatus.ACCEPTED);
-
-        }
+    @PostMapping("/resetpassword/{token}")
+    ResponseEntity<ResponseDTO> resetpass(@Valid @RequestBody ResetPassword resetpasswordDto, @PathVariable String token) {
+      UserRegistrationData userDetails = service.resetPassword(resetpasswordDto,token);
+        ResponseDTO response = new ResponseDTO("Password changed to   :", userDetails.getPassword());
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+
+
 
 }

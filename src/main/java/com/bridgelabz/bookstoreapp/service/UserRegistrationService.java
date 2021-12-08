@@ -2,22 +2,27 @@ package com.bridgelabz.bookstoreapp.service;
 
 import com.bridgelabz.bookstoreapp.dto.ForgotPasswordDto;
 import com.bridgelabz.bookstoreapp.dto.LoginDto;
+import com.bridgelabz.bookstoreapp.dto.ResetPassword;
 import com.bridgelabz.bookstoreapp.dto.UserRegistrationDto;
 import com.bridgelabz.bookstoreapp.exception.UserRegistrationException;
 import com.bridgelabz.bookstoreapp.model.UserRegistrationData;
 import com.bridgelabz.bookstoreapp.repository.UserRegistrationRepository;
+import com.bridgelabz.bookstoreapp.util.Email;
 import com.bridgelabz.bookstoreapp.util.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @Slf4j
 public class UserRegistrationService implements IUserRegistrationService {
+    String token = null;
     @Autowired
     UserRegistrationRepository userRepo;
 
@@ -28,6 +33,11 @@ public class UserRegistrationService implements IUserRegistrationService {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private Email email;
+    @Autowired
+    private MailService mailService;
+
     @Override
     public List<UserRegistrationData> getUserDeatils() {
         return userRepo.findAll();
@@ -37,8 +47,16 @@ public class UserRegistrationService implements IUserRegistrationService {
     public UserRegistrationData createUserRegistration(UserRegistrationDto userDTO) {
         UserRegistrationData userData = new UserRegistrationData();
         userData.createUser(userDTO);
-        return userRepo.save(userData);
+        userRepo.save(userData);
+        email.setTo(userData.getEmailId());
+        email.setFrom("bookstoremailapi@gmail.com");
+        email.setSubject(" User Verification...");
+        token = tokenUtil.createToken(userData.getUserId());
+        email.setBody(mailService.getLink("http://localhost:8080/userregistrationservice/verify/" + token));
+        mailService.send(email.getTo(), email.getSubject(), email.getBody());
+        return userData;
     }
+
 
     @Override
     public UserRegistrationData getUserById(int userId) {
@@ -72,18 +90,6 @@ public class UserRegistrationService implements IUserRegistrationService {
         return null;
     }
 
-//    @Override
-//    public UserRegistrationData userLogin(@Valid LoginDto logindto) {
-//        Optional<UserRegistrationData> emailId = userRepo.findByEmailId(logindto.getEmailId());
-//        if (emailId.isPresent()) {
-//            System.out.println(emailId.get().toString());
-//            if ((logindto.getPassword() == emailId.get().getPassword())) {
-//                System.out.println(emailId.get().getPassword());
-//                return emailId.get();
-//            }
-//        }
-//        return null;
-//    }
 
     @Override
     public String verifyUser(String token) {
@@ -94,24 +100,6 @@ public class UserRegistrationService implements IUserRegistrationService {
             return isPresent.toString();
         } else
             return null;
-    }
-
-    @Override
-    public Optional<UserRegistrationData> forgotPassword(ForgotPasswordDto passwordDto) {
-        if (passwordDto.getNewPassword().equals(passwordDto.getConfirmPassword())) {
-            Optional<UserRegistrationData> user = userRepo.findByEmailId(passwordDto.getEmailId());
-            if (user.isPresent()) {
-                user.get().setPassword(passwordDto.getNewPassword());
-                userRepo.save(user.get());
-                return user;
-            } else {
-                log.error("User not found Exception:");
-            }
-            return null;
-        } else {
-            log.error("Entered password is not correct:");
-            return null;
-        }
     }
 
     @Override
@@ -128,22 +116,38 @@ public class UserRegistrationService implements IUserRegistrationService {
             return null;
         }
     }
+
+    @Override
+    public String forgotPassword(ForgotPasswordDto forgotPassword) {
+        String emailId = forgotPassword.getEmailId();
+        Optional<UserRegistrationData> isPresent = userRepo.findByEmailId(emailId);
+        if (isPresent.isPresent()) {
+            email.setTo(forgotPassword.getEmailId());
+            email.setFrom("bookstoremailapi@gmail.com");
+            email.setSubject("Reset Password Link");
+            String token = tokenUtil.createToken(isPresent.get().getUserId());
+            email.setBody(mailService.getLink("http://localhost:8080/userregistrationservice/resetpassword/" + token));
+            mailService.send(email.getTo(), email.getSubject(), email.getBody());
+            return "successfull";
+        }
+        throw new UserRegistrationException("Email id not found");
+    }
+
+    @Override
+    public UserRegistrationData resetPassword(ResetPassword resetpassword, String token) {
+        int id = Math.toIntExact(tokenUtil.decodeToken(token));
+
+        Optional<UserRegistrationData> userDetails = userRepo.findById(id);
+        if (resetpassword.getNewPassword().equals(resetpassword.getConfirmPassword())) {
+            if (userDetails.isPresent()) {
+                userDetails.get().setPassword(resetpassword.getNewPassword());
+                userDetails.get().setUpdatedDate(LocalDate.now());
+                return userRepo.save(userDetails.get());
+            }
+        }
+        return null;
+    }
 }
 
-
-//    @Override
-//    public Optional<UserRegistrationData> userLogin(LoginDto logindto) {
-//            Optional<UserRegistrationData> userLogin = userRepo.findByEmailIdAndPassword(logindto.emailId, logindto.password);
-//
-//            if (userLogin.isPresent())
-//            {
-//                log.info("user logged in successfully");
-//            }
-//            else
-//            {
-//                log.error("User not Found Exception:");
-//            }
-//            return null;
-//        }
 
 

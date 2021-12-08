@@ -2,6 +2,7 @@ package com.bridgelabz.bookstoreapp.service;
 
 import com.bridgelabz.bookstoreapp.dto.ForgotPasswordDto;
 import com.bridgelabz.bookstoreapp.dto.LoginDto;
+import com.bridgelabz.bookstoreapp.dto.ResetPassword;
 import com.bridgelabz.bookstoreapp.dto.UserRegistrationDto;
 import com.bridgelabz.bookstoreapp.model.UserRegistrationData;
 
@@ -25,7 +26,11 @@ public interface IUserRegistrationService {
 
     String verifyUser(String token);
 
-    Optional<UserRegistrationData> forgotPassword(ForgotPasswordDto passwordDTO);
+  //  Optional<UserRegistrationData> forgotPassword(ForgotPasswordDto passwordDTO);
 
     Optional<UserRegistrationData> UserLogin(LoginDto logindto);
+
+    String forgotPassword(ForgotPasswordDto forgotpass);
+
+    UserRegistrationData resetPassword(ResetPassword resetPassword, String token);
 }
