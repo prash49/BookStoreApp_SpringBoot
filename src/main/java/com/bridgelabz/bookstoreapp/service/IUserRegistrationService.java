@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface IUserRegistrationService {
     List<UserRegistrationData> getUserDeatils();
 
-    UserRegistrationData createUserRegistration(UserRegistrationDto userDTO);
+    UserRegistrationData userRegistration(UserRegistrationDto userDTO);
 
     UserRegistrationData getUserById(int userId);
 
@@ -22,15 +22,15 @@ public interface IUserRegistrationService {
 
     List<UserRegistrationData> getAllUsersData(String token);
 
-//    UserRegistrationData userLogin(@Valid LoginDto logindto);
 
     String verifyUser(String token);
 
-  //  Optional<UserRegistrationData> forgotPassword(ForgotPasswordDto passwordDTO);
 
     Optional<UserRegistrationData> UserLogin(LoginDto logindto);
 
     String forgotPassword(ForgotPasswordDto forgotpass);
 
     UserRegistrationData resetPassword(ResetPassword resetPassword, String token);
+
+    String deleteAll();
 }

@@ -10,6 +10,7 @@ import com.bridgelabz.bookstoreapp.repository.UserRegistrationRepository;
 import com.bridgelabz.bookstoreapp.util.Email;
 import com.bridgelabz.bookstoreapp.util.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -44,17 +45,27 @@ public class UserRegistrationService implements IUserRegistrationService {
     }
 
     @Override
-    public UserRegistrationData createUserRegistration(UserRegistrationDto userDTO) {
-        UserRegistrationData userData = new UserRegistrationData();
-        userData.createUser(userDTO);
-        userRepo.save(userData);
-        email.setTo(userData.getEmailId());
-        email.setFrom("bookstoremailapi@gmail.com");
-        email.setSubject(" User Verification...");
-        token = tokenUtil.createToken(userData.getUserId());
-        email.setBody(mailService.getLink("http://localhost:8080/userregistrationservice/verify/" + token));
-        mailService.send(email.getTo(), email.getSubject(), email.getBody());
-        return userData;
+    public UserRegistrationData userRegistration(UserRegistrationDto userDTO) {
+
+        Optional<UserRegistrationData> userCheck = userRepo.findByEmailId(userDTO.getEmailId());
+        if (userCheck.isPresent()) {
+            log.error("Email already exists");
+            throw new UserRegistrationException("email already exists");
+        } else {
+            UserRegistrationData userData = new UserRegistrationData();
+//        String pwd = userData.getPassword();
+//        String encryptpwd = passwordEncoder.encode(pwd);
+//        userData.setPassword(encryptpwd);
+            userData.createUser(userDTO);
+            userRepo.save(userData);
+            email.setTo(userData.getEmailId());
+            email.setFrom("bookstoremailapi@gmail.com");
+            email.setSubject(" User Verification...");
+            token = tokenUtil.createToken(userData.getUserId());
+            email.setBody(mailService.getLink("http://localhost:8080/userregistrationservice/verify/" + token));
+            mailService.send(email.getTo(), email.getSubject(), email.getBody());
+            return userData;
+        }
     }
 
 
@@ -147,6 +158,13 @@ public class UserRegistrationService implements IUserRegistrationService {
         }
         return null;
     }
+
+    @Override
+    public String deleteAll() {
+        userRepo.deleteAll();
+        return "Successfully deleted all the users";
+    }
+
 }
 
 

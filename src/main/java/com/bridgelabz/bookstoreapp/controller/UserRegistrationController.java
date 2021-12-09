@@ -34,11 +34,11 @@ public class UserRegistrationController {
         return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/create")
+    @PostMapping("/register")
     public ResponseEntity<ResponseDTO> addUserRegistrationData(@Valid @RequestBody UserRegistrationDto userDTO) {
-        UserRegistrationData userDetails = service.createUserRegistration(userDTO);
+        UserRegistrationData userDetails = service.userRegistration(userDTO);
         log.debug("User Registration input detaisl: " + userDTO.toString());
-        ResponseDTO response = new ResponseDTO("successfully Created/Registered the user for Verficaton mail sent",tokenUtil.createToken(userDetails.getUserId()) );
+        ResponseDTO response = new ResponseDTO("successfully Registered the user, Verification mail sent", tokenUtil.createToken(userDetails.getUserId()));
         return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
     }
 
@@ -59,6 +59,7 @@ public class UserRegistrationController {
         return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
 
     }
+
 
     @GetMapping("/readtokendata")
     public ResponseEntity<ResponseDTO> readdata(@RequestHeader(name = "token") String token) throws UserRegistrationException {
@@ -103,17 +104,24 @@ public class UserRegistrationController {
     ResponseEntity<ResponseDTO> forgotpass(@Valid @RequestBody ForgotPasswordDto forgotpassword) {
         String forgotPassword = service.forgotPassword(forgotpassword);
         ResponseDTO response = new ResponseDTO("Reset Password link sent to Email  :", forgotPassword);
-          return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 
     @PostMapping("/resetpassword/{token}")
     ResponseEntity<ResponseDTO> resetpass(@Valid @RequestBody ResetPassword resetpasswordDto, @PathVariable String token) {
-      UserRegistrationData userDetails = service.resetPassword(resetpasswordDto,token);
+        UserRegistrationData userDetails = service.resetPassword(resetpasswordDto, token);
         ResponseDTO response = new ResponseDTO("Password changed to   :", userDetails.getPassword());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 
+
+    @DeleteMapping("/deleteall")
+    public ResponseEntity<ResponseDTO> deleteAllAddressBookData() {
+        String message = service.deleteAll();
+        ResponseDTO respDTO = new ResponseDTO("Deleteall:", message);
+        return new ResponseEntity<ResponseDTO>(respDTO, HttpStatus.OK);
+    }
 
 
 }
