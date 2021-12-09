@@ -46,7 +46,7 @@ public class UserRegistrationController {
     public ResponseEntity<ResponseDTO> updateContactData(@PathVariable("userId") int userId,
                                                          @Valid @RequestBody UserRegistrationDto userDTO) {
         UserRegistrationData updateUser = service.updateUserRegistrationData(userId, userDTO);
-        log.debug("AddressBook Contact After Update " + updateUser.toString());
+        log.debug("User Registration Data After Update " + updateUser.toString());
         ResponseDTO response = new ResponseDTO("Updated contact data for" + userId, updateUser);
         return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
 
