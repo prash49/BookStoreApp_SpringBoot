@@ -10,6 +10,7 @@ public interface BookDetailsRepository  extends JpaRepository<BookDetails , Inte
 
     Optional<BookDetails> findByBookId(int bookId);
 
-//    @Query(value = "select * from userregistration where email_Id= :emailId", nativeQuery = true)
     Optional<BookDetails> findByBookName(String bookName);
+
+
 }

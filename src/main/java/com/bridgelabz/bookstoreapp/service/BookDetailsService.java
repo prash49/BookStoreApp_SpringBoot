@@ -9,8 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -56,9 +56,13 @@ public class BookDetailsService implements IBookDetailsService {
 
     @Override
     public BookDetails updateBookByName(String bookName, BookDetailsDto bookDTO) {
-        BookDetails bookData = this.getBookByName(bookName);
-        bookData.updateBook(bookDTO);
-        return bookRepo.save(bookData);
+//        Optional<BookDetails> bookPresence = bookRepo.findByBookName(bookName);
+//        if (bookPresence.isPresent()) {
+            BookDetails bookData = this.getBookByName(bookName);
+            bookData.updateBook(bookDTO);
+            return bookRepo.save(bookData);
+//        }
+//        return null;
     }
 
     @Override
