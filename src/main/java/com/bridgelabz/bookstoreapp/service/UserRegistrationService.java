@@ -104,6 +104,7 @@ public class UserRegistrationService implements IUserRegistrationService {
 
     @Override
     public String verifyUser(String token) {
+
         int id = Math.toIntExact(tokenUtil.decodeToken(token));
         Optional<UserRegistrationData> isPresent = userRepo.findById(id);
 
