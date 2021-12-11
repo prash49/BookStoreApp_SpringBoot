@@ -104,21 +104,4 @@ public class BookDetailsController {
         return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
     }
 
-//
-//    @PutMapping("/updatequantity/{bookId}/{bookQuantity}")
-//    public ResponseEntity<ResponseDTO> updateBookQuantity(@RequestHeader(name = "token") String token, @PathVariable int bookId, @PathVariable int bookQuantity) {
-//        BookDetails updateBookQuantity = bookService.updateBookQuantity(bookId, bookQuantity);
-//        ResponseDTO response = new ResponseDTO("Book Quantity Update is success for id " + bookId, updateBookQuantity);
-//        return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
-//    }
-//
-//
-//    @PutMapping("/updateprice/{bookId}/{bookPrice}")
-//    public ResponseEntity<ResponseDTO> updateBookPrice(@RequestHeader(name = "token") String token,@PathVariable int bookId, @PathVariable int bookPrice) {
-//        BookDetails updateBookPrice = bookService.updateBookPrice(bookId, bookPrice);
-//        ResponseDTO response = new ResponseDTO("Book Price Update is success for id " + bookId, updateBookPrice);
-//        return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
-//    }
-
-
 }
