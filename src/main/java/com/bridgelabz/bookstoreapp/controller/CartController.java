@@ -35,7 +35,6 @@ public class CartController {
         cartService.deleteFromCart(cartId);
         ResponseDTO response = new ResponseDTO("Delete call success for item Removed From Cart ", "deleted id:" + cartId);
         return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
-
     }
 
     @PutMapping("/update/{cartId}/{quantity}")

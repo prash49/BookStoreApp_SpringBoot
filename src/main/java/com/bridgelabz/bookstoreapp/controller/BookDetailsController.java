@@ -1,12 +1,7 @@
 package com.bridgelabz.bookstoreapp.controller;
-
-
 import com.bridgelabz.bookstoreapp.dto.BookDetailsDto;
 import com.bridgelabz.bookstoreapp.dto.ResponseDTO;
-
 import com.bridgelabz.bookstoreapp.model.BookDetails;
-
-
 import com.bridgelabz.bookstoreapp.service.IBookDetailsService;
 import com.bridgelabz.bookstoreapp.util.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
