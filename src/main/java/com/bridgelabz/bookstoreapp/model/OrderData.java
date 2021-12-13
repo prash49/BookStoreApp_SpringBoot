@@ -1,7 +1,6 @@
 package com.bridgelabz.bookstoreapp.model;
 
 
-import com.bridgelabz.bookstoreapp.dto.BookDetailsDto;
 import com.bridgelabz.bookstoreapp.dto.OrderDto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -40,14 +39,4 @@ public class OrderData {
 
     }
 
-
-//    public void updateBook (BookDetailsDto bookDto){
-//        this.bookName = bookDto.getBookName();
-//        this.bookAuthor = bookDto.getBookAuthor();
-//        this.bookDescription =  bookDto.getBookDescription();
-//        this.bookLogo =  bookDto.getBookLogo();
-//        this.bookPrice = bookDto.getBookPrice();
-//        this.bookQuantity = bookDto.getBookQuantity();
-//
-//    }
 }

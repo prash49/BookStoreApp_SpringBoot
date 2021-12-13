@@ -15,7 +15,7 @@ class CartData {
     private int id;
 
     @JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
     private UserRegistrationData user;
 
