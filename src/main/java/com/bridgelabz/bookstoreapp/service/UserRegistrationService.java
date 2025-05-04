@@ -11,18 +11,20 @@ import com.bridgelabz.bookstoreapp.util.Email;
 import com.bridgelabz.bookstoreapp.util.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@Slf4j
 public class UserRegistrationService implements IUserRegistrationService {
+
+    Logger log = LoggerFactory.getLogger(UserRegistrationService.class);
     String token = null;
     @Autowired
     UserRegistrationRepository userRepo;
@@ -50,7 +52,9 @@ public class UserRegistrationService implements IUserRegistrationService {
         Optional<UserRegistrationData> userCheck = userRepo.findByEmailId(userDTO.getEmailId());
         if (userCheck.isPresent()) {
             log.error("Email already exists");
-            throw new UserRegistrationException("email already exists");
+            return null;
+//            throw new UserRegistrationException("email already exists");
+
         } else {
             UserRegistrationData userData = new UserRegistrationData();
 //        String pwd = userData.getPassword();
@@ -91,7 +95,6 @@ public class UserRegistrationService implements IUserRegistrationService {
 
     @Override
     public List<UserRegistrationData> getAllUsersData(String token) {
-
         Long id = tokenUtil.decodeToken(token);
         Optional<UserRegistrationData> usersData = userRepo.findById(Math.toIntExact((id)));
         if (usersData.isPresent()) {
@@ -103,28 +106,25 @@ public class UserRegistrationService implements IUserRegistrationService {
 
 
     @Override
-    public String verifyUser(String token) {
+    public UserRegistrationData verifyUser(String token) {
 
         int id = Math.toIntExact(tokenUtil.decodeToken(token));
         Optional<UserRegistrationData> isPresent = userRepo.findById(id);
 
         if (isPresent.isPresent()) {
-            return isPresent.toString();
+            return isPresent.get();
         } else
             return null;
     }
 
     @Override
-    public Optional<UserRegistrationData> UserLogin(LoginDto logindto) {
-
-        Optional<UserRegistrationData> userLogin = userRepo.findByEmailIdAndPassword(logindto.emailId, logindto.password);
-
-        if (userLogin.isPresent()) {
+    public UserRegistrationData UserLogin(LoginDto logindto) {
+        UserRegistrationData userLogin = userRepo.findByEmailIdAndPassword(logindto.emailId, logindto.password);
+        if (userLogin !=null) {
             log.info("user logged in successfully");
             return userLogin;
         } else {
             log.error("User not Found Exception:");
-
             return null;
         }
     }

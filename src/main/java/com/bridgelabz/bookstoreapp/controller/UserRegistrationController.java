@@ -17,6 +17,8 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/userregistrationservice")
+//@CrossOrigin("*")
+@CrossOrigin(allowedHeaders="*",origins="*")
 @Slf4j
 public class UserRegistrationController {
 
@@ -37,9 +39,14 @@ public class UserRegistrationController {
     @PostMapping("/register")
     public ResponseEntity<ResponseDTO> addUserRegistrationData(@Valid @RequestBody UserRegistrationDto userDTO) {
         UserRegistrationData userDetails = service.userRegistration(userDTO);
+       if(userDetails != null){
         log.debug("User Registration input detaisl: " + userDTO.toString());
         ResponseDTO response = new ResponseDTO("successfully Registered the user, Verification mail sent", tokenUtil.createToken(userDetails.getUserId()));
         return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
+    }else{
+           ResponseDTO response = new ResponseDTO("email already exists", null);
+           return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
+       }
     }
 
     @PutMapping("/update/{userId}")
@@ -74,23 +81,23 @@ public class UserRegistrationController {
 
     }
 
+
     @PostMapping("/userlogin")
     public ResponseEntity<ResponseDTO> userLogin(@RequestBody LoginDto logindto) {
-        Optional<UserRegistrationData> login = service.UserLogin(logindto);
+        UserRegistrationData login = service.UserLogin(logindto);
         if (login != null) {
-            ResponseDTO dto = new ResponseDTO("User login successfully:", tokenUtil.createToken(login.get().getUserId()));
-            return new ResponseEntity<>(dto, HttpStatus.ACCEPTED);
+            ResponseDTO dto = new ResponseDTO("User login successfully:", tokenUtil.createToken(login.getUserId()));
+            log.info(dto.toString());
+            return new ResponseEntity<ResponseDTO>(dto, HttpStatus.OK);
         } else {
-            ResponseDTO dto = new ResponseDTO("User login not successfully:", login);
-            return new ResponseEntity<>(dto, HttpStatus.ACCEPTED);
-
+            ResponseDTO dto = new ResponseDTO("User login successfully:", null);
+            return new ResponseEntity<ResponseDTO>(dto, HttpStatus.OK);
         }
     }
 
-
     @PostMapping("/verify/{token}")
     ResponseEntity<ResponseDTO> verifyUser(@Valid @PathVariable String token) {
-        String userVerification = service.verifyUser(token);
+        UserRegistrationData userVerification = service.verifyUser(token);
         if (userVerification != null) {
             ResponseDTO responseDTO = new ResponseDTO("User verified :", userVerification);
             return new ResponseEntity<>(responseDTO, HttpStatus.OK);

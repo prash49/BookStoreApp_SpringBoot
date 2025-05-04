@@ -11,7 +11,10 @@ public interface ICartService {
 
     void deleteFromCart(int cartId);
 
-    CartData updateQuantity(String token, int cartId, int quantity);
+//    CartData updateQuantity(String token, int cartId, int quantity);
+CartData updateQuantity( int cartId, int quantity);
 
     List<CartData> findAllInCart(String token);
+
+    void deleteAllFromCart();
 }
