@@ -54,4 +54,66 @@ public class BookDetails implements Serializable {
 
     }
 
+    public int getBookId() {
+        return bookId;
+    }
+
+    public BookDetails setBookId(int bookId) {
+        this.bookId = bookId;
+        return this;
+    }
+
+    public String getBookName() {
+        return bookName;
+    }
+
+    public BookDetails setBookName(String bookName) {
+        this.bookName = bookName;
+        return this;
+    }
+
+    public String getBookAuthor() {
+        return bookAuthor;
+    }
+
+    public BookDetails setBookAuthor(String bookAuthor) {
+        this.bookAuthor = bookAuthor;
+        return this;
+    }
+
+    public String getBookDescription() {
+        return bookDescription;
+    }
+
+    public BookDetails setBookDescription(String bookDescription) {
+        this.bookDescription = bookDescription;
+        return this;
+    }
+
+    public String getBookLogo() {
+        return bookLogo;
+    }
+
+    public BookDetails setBookLogo(String bookLogo) {
+        this.bookLogo = bookLogo;
+        return this;
+    }
+
+    public int getBookQuantity() {
+        return bookQuantity;
+    }
+
+    public BookDetails setBookQuantity(int bookQuantity) {
+        this.bookQuantity = bookQuantity;
+        return this;
+    }
+
+    public int getBookPrice() {
+        return bookPrice;
+    }
+
+    public BookDetails setBookPrice(int bookPrice) {
+        this.bookPrice = bookPrice;
+        return this;
+    }
 }

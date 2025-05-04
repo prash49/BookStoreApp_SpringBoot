@@ -47,16 +47,29 @@ public class CartService implements ICartService {
         cartRepo.deleteById(cartId);
     }
 
+//    @Override
+//    public CartData updateQuantity(String token, int cartId, int quantity) {
+//        int id = Math.toIntExact(tokenUtil.decodeToken(token));
+//        Optional<UserRegistrationData> isPresent = userRepo.findById(id);
+//        if(isPresent.isPresent()){
+//            CartData cart = cartRepo.getById(cartId);
+//            cart.setQuantity(quantity);
+//           return cartRepo.save(cart);
+//        }
+//        return  null;
+//    }
+
+
     @Override
-    public CartData updateQuantity(String token, int cartId, int quantity) {
-        int id = Math.toIntExact(tokenUtil.decodeToken(token));
-        Optional<UserRegistrationData> isPresent = userRepo.findById(id);
-        if(isPresent.isPresent()){
+    public CartData updateQuantity( int cartId, int quantity) {
+//        int id = Math.toIntExact(tokenUtil.decodeToken(token));
+//        Optional<UserRegistrationData> isPresent = userRepo.findById(id);
+//        if(isPresent.isPresent()){
             CartData cart = cartRepo.getById(cartId);
             cart.setQuantity(quantity);
-           return cartRepo.save(cart);
-        }
-        return  null;
+            return cartRepo.save(cart);
+//        }
+//        return  null;
     }
 
     @Override
@@ -69,6 +82,13 @@ public class CartService implements ICartService {
         }
         return null;
     }
+
+    @Override
+    public void deleteAllFromCart() {
+
+            cartRepo.deleteAll();
+        }
+
 
 
 }

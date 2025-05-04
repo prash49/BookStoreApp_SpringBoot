@@ -44,13 +44,18 @@ public class BookDetailsService implements IBookDetailsService {
 
     @Override
     public BookDetails addBook(String token, BookDetailsDto bookDto) {
-        int id = Math.toIntExact(tokenUtil.decodeToken(token));
-        Optional<UserRegistrationData> isPresent = userRepo.findById(id);
-        if (isPresent.isPresent()) {
-            BookDetails bookAdded = new BookDetails();
-            bookAdded.createBook(bookDto);
-            return bookRepo.save(bookAdded);
-        }
+       try {
+           int id = Math.toIntExact(tokenUtil.decodeToken(token));
+           Optional<UserRegistrationData> isPresent = userRepo.findById(id);
+           if (isPresent.isPresent()) {
+               BookDetails bookAdded = new BookDetails();
+               bookAdded.createBook(bookDto);
+               return bookRepo.save(bookAdded);
+           }
+       }catch (RuntimeException e){
+           throw  new RuntimeException("Book not added");
+       }
+
         return null;
     }
 
@@ -138,5 +143,8 @@ public class BookDetailsService implements IBookDetailsService {
             }
             return null;
 
+        }
+        private void printPrivateMethodData(String input){
+            System.out.println("its a  private method call from Test class:"+ input);
         }
     }

@@ -1,12 +1,16 @@
 package com.bridgelabz.bookstoreapp.service;
 
 import com.bridgelabz.bookstoreapp.dto.OrderDto;
+import com.bridgelabz.bookstoreapp.model.BookDetails;
 import com.bridgelabz.bookstoreapp.model.OrderData;
 import com.bridgelabz.bookstoreapp.model.UserRegistrationData;
+import com.bridgelabz.bookstoreapp.repository.BookDetailsRepository;
+import com.bridgelabz.bookstoreapp.repository.CartRepository;
 import com.bridgelabz.bookstoreapp.repository.OrderRepository;
 import com.bridgelabz.bookstoreapp.repository.UserRegistrationRepository;
 import com.bridgelabz.bookstoreapp.util.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,14 +30,20 @@ public class OrderService implements  IOrderService{
     @Autowired
     OrderRepository orderRepo;
 
+    @Autowired
+    BookDetailsRepository bookRepo;
+    @Autowired
+    BookDetailsService bookService;
+
 
     @Override
     public OrderData placeOrder(String token, OrderDto orderDto) {
         int id = Math.toIntExact(tokenUtil.decodeToken(token));
-        Optional<UserRegistrationData> isPresent = userRepo.findById(id);
-        if(isPresent.isPresent()){
-            OrderData order = new OrderData();
-           order.crateOrder(orderDto);
+        Optional<UserRegistrationData> user = userRepo.findById(id);
+        if(user.isPresent()){
+            BookDetails book = bookService.getBookById(token,orderDto.getBookId());
+//            OrderData order = new OrderData(user.get(), book, orderDto.getPrice(), orderDto.getQuantity(), orderDto.getAddress(), orderDto.isCancel());
+            OrderData order = new OrderData(orderDto);
            return orderRepo.save(order);
         }
         return null;
@@ -48,11 +58,11 @@ public class OrderService implements  IOrderService{
             if (order.isPresent()) {
                 order.get().setCancel(true);
                 orderRepo.save(order.get());
-                return "Cancel order Successfull";
+                return "Cancel order Successful";
             }
 
         }
-        return  "cancel order not successfull";
+        return  "cancel order not successful";
     }
 
     @Override
@@ -82,7 +92,6 @@ public class OrderService implements  IOrderService{
                 return orders;
             }
         }
-
        }return  null;
     }
 }

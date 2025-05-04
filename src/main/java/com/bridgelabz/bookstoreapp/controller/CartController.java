@@ -14,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/cart")
+@CrossOrigin(allowedHeaders="*",origins="*")
 public class CartController {
 
 
@@ -37,10 +38,19 @@ public class CartController {
         return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
     }
 
+//    @PutMapping("/update/{cartId}/{quantity}")
+//    ResponseEntity<ResponseDTO> updateCart(@RequestHeader(name = "token") String token, @PathVariable("cartId") int cartId,
+//                                           @PathVariable("quantity") int quantity) {
+//        CartData cart = cartService.updateQuantity(token, cartId, quantity);
+//        ResponseDTO response = new ResponseDTO("Update call success for item Quantity updated From Cart ", cart);
+//        return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
+//    }
+
+
     @PutMapping("/update/{cartId}/{quantity}")
-    ResponseEntity<ResponseDTO> updateCart(@RequestHeader(name = "token") String token, @PathVariable("cartId") int cartId,
+    ResponseEntity<ResponseDTO> updateCart( @PathVariable("cartId") int cartId,
                                            @PathVariable("quantity") int quantity) {
-        CartData cart = cartService.updateQuantity(token, cartId, quantity);
+        CartData cart = cartService.updateQuantity(cartId, quantity);
         ResponseDTO response = new ResponseDTO("Update call success for item Quantity updated From Cart ", cart);
         return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
     }
@@ -57,6 +67,14 @@ public class CartController {
         List<CartData> allItems = cartRepo.findAll();
         ResponseDTO response = new ResponseDTO("All Items in Cart ", allItems);
         return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete")
+        ResponseEntity<ResponseDTO> removeAllFromCart() {
+            cartService.deleteAllFromCart();
+            ResponseDTO response = new ResponseDTO("Delete call success for item Removed From Cart ", "deleted id:");
+            return new ResponseEntity<ResponseDTO>(response, HttpStatus.OK);
+
     }
 
 }

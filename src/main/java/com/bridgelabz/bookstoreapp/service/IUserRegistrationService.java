@@ -7,7 +7,6 @@ import com.bridgelabz.bookstoreapp.dto.UserRegistrationDto;
 import com.bridgelabz.bookstoreapp.model.UserRegistrationData;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface IUserRegistrationService {
     List<UserRegistrationData> getUserDeatils();
@@ -23,10 +22,10 @@ public interface IUserRegistrationService {
     List<UserRegistrationData> getAllUsersData(String token);
 
 
-    String verifyUser(String token);
+    UserRegistrationData verifyUser(String token);
 
 
-    Optional<UserRegistrationData> UserLogin(LoginDto logindto);
+   UserRegistrationData UserLogin(LoginDto logindto);
 
     String forgotPassword(ForgotPasswordDto forgotpass);
 

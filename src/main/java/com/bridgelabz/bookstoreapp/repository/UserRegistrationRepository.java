@@ -10,5 +10,5 @@ public interface UserRegistrationRepository extends JpaRepository<UserRegistrati
     @Query(value = "select * from userregistration where email_Id= :emailId", nativeQuery = true)
     Optional<UserRegistrationData> findByEmailId(String emailId);
 
-    Optional<UserRegistrationData> findByEmailIdAndPassword(String email_Id, String password);
+  UserRegistrationData findByEmailIdAndPassword(String email_Id, String password);
 }
